@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stopwatch Web Application</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      color: white;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    .stopwatch {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+    .buttons button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .buttons button:hover {
+      opacity: 0.8;
+    }
+    .start { background: #28a745; color: white; }
+    .pause { background: #ffc107; color: black; }
+    .reset { background: #dc3545; color: white; }
+    .lap { background: #007bff; color: white; }
+    ul {
+      margin-top: 20px;
+      padding: 0;
+      list-style: none;
+    }
+    li {
+      background: rgba(255, 255, 255, 0.2);
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Stopwatch</h1>
+  <div class="stopwatch" id="display">00:00:00</div>
+  <div class="buttons">
+    <button class="start" onclick="start()">Start</button>
+    <button class="pause" onclick="pause()">Pause</button>
+    <button class="reset" onclick="reset()">Reset</button>
+    <button class="lap" onclick="lap()">Lap</button>
+  </div>
+  <ul id="laps"></ul>
+
+  <script>
+    let [hours, minutes, seconds] = [0, 0, 0];
+    let timer = null;
+    let running = false;
+
+    function updateDisplay() {
+      let h = hours < 10 ? "0" + hours : hours;
+      let m = minutes < 10 ? "0" + minutes : minutes;
+      let s = seconds < 10 ? "0" + seconds : seconds;
+      document.getElementById("display").innerText = `${h}:${m}:${s}`;
+    }
+
+    function stopwatch() {
+      seconds++;
+      if (seconds == 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes == 60) {
+          minutes = 0;
+          hours++;
+        }
+      }
+      updateDisplay();
+    }
+
+    function start() {
+      if (!running) {
+        timer = setInterval(stopwatch, 1000);
+        running = true;
+      }
+    }
+
+    function pause() {
+      clearInterval(timer);
+      running = false;
+    }
+
+    function reset() {
+      clearInterval(timer);
+      [hours, minutes, seconds] = [0, 0, 0];
+      updateDisplay();
+      document.getElementById("laps").innerHTML = "";
+      running = false;
+    }
+
+    function lap() {
+      let lapTime = document.getElementById("display").innerText;
+      let li = document.createElement("li");
+      li.innerText = `Lap: ${lapTime}`;
+      document.getElementById("laps").appendChild(li);
+    }
+  </script>
+</body>
+</html>
